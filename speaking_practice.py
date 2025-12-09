@@ -100,7 +100,7 @@ class SpeechCoach:
     def phoneme_score(self, expected_text, transcript):
         exp_words = expected_text.lower().split()
         spk_words = transcript.lower().split()
-
+    
         # Limit to word pairs that exist
         words_to_compare = []
         for i in range(len(exp_words)):
@@ -108,39 +108,39 @@ class SpeechCoach:
                 words_to_compare.append((exp_words[i], spk_words[i]))
             else:
                 words_to_compare.append((exp_words[i], None))
-
+    
         # ------------------------------------------
         # 1️⃣ Batch embed all words in ONE call
         # ------------------------------------------
         batch_inputs = []
         for exp, spk in words_to_compare:
             batch_inputs.append(exp)
-            batch_inputs.append(spk if spk else "")
-
+            batch_inputs.append(spk if spk else "<missing>")   # IMPORTANT FIX ✔
+    
         embeds = self.client.embeddings.create(
             model="text-embedding-3-small",
             input=batch_inputs
         ).data
-
+    
         # Reshape embeddings
         exp_embeds = embeds[0::2]
         spk_embeds = embeds[1::2]
-
+    
         scores = []
         suggestions = []
-
+    
         for (exp, spk), e_emb, s_emb in zip(words_to_compare, exp_embeds, spk_embeds):
-
-            if spk is None:
+    
+            if spk is None or spk == "<missing>":
                 scores.append((exp, 0.0))
                 suggestions.append(f"Try pronouncing **{exp}** clearly.")
                 continue
-
+    
             raw = cosine_sim(e_emb.embedding, s_emb.embedding)
             score = (raw + 1) / 2  # normalize to 0–1
-
+    
             scores.append((exp, score))
-
+    
             if score < 0.65:
                 for ph, tip in PHONEME_TIPS.items():
                     if ph in exp:
@@ -148,8 +148,9 @@ class SpeechCoach:
                         break
                 else:
                     suggestions.append(f"Try saying **{exp}** slowly and clearly.")
-
+    
         return scores, suggestions
+
 
 
 # ============================================================
