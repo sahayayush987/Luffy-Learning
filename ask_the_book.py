@@ -135,32 +135,80 @@ Now answer following ALL rules.
 
         start = time.time()
 
-        # Step 1 — retrieve
-        docs = self.db.similarity_search(student_question, k=5)
+        # ------------------------------------------------------------
+        # STEP 1 — Retrieve more chunks (wider recall)
+        # ------------------------------------------------------------
+        raw_docs = self.db.similarity_search(student_question, k=20)
 
-        # Step 2 — safety filter
-        safe_docs = [d for d in docs if responseCheck.is_safe_text(d.page_content)]
+        if not raw_docs:
+            msg = "I couldn't find anything related to that part of the story. Try asking something else 😊"
+            self._log("no_docs", "", student_question, 0.0, start)
+            return msg, 0.0
+
+        # ------------------------------------------------------------
+        # STEP 2 — SAFETY FILTER
+        # ------------------------------------------------------------
+        safe_docs = [d for d in raw_docs if responseCheck.is_safe_text(d.page_content)]
         if not safe_docs:
             msg = "That part of the story isn't for our age group 😊"
             self._log("unsafe", "", student_question, 0.0, start)
             return msg, 0.0
 
-        # Step 3 — grounding
-        best_passage, support_score = responseCheck.find_best_supported_passage(
-            student_question, safe_docs
+        # ------------------------------------------------------------
+        # STEP 3 — LLM RE-RANKING
+        # ------------------------------------------------------------
+        ranking_prompt = """
+        You are ranking passages from a novel.
+        
+        Rank how relevant EACH passage is for answering the user’s question.
+        Respond ONLY with a JSON list of scores, one score per passage (0–1.0).
+        
+        Question:
+        {question}
+        
+        Passages:
+        {passages}
+        """
+
+        passages_text = "\n\n".join([f"--- Passage {i} ---\n{d.page_content}" 
+                                     for i, d in enumerate(safe_docs)])
+
+        rank_prompt = ranking_prompt.format(
+            question=student_question,
+            passages=passages_text
         )
 
-        if best_passage is None:
-            msg = (
-                "I'm not sure from this part of the book 🤔\n"
-                "Try asking about things shown in this passage!"
-            )
+        try:
+            ranking_response = self.llm.invoke(rank_prompt).content
+            import json
+            scores = json.loads(ranking_response)
+        except Exception:
+            # fallback — simple similarity scores
+            scores = [1.0] * len(safe_docs)
+
+        # Attach scores
+        scored_docs = list(zip(safe_docs, scores))
+        # Sort high → low
+        scored_docs.sort(key=lambda x: x[1], reverse=True)
+
+        # ------------------------------------------------------------
+        # STEP 4 — SELECT TOP 3 PASSAGES (multi-hop reasoning)
+        # ------------------------------------------------------------
+        top_docs = [doc.page_content for doc, sc in scored_docs[:3]]
+        support_score = sum([sc for _, sc in scored_docs[:3]]) / 3
+
+        if not top_docs:
+            msg = "I'm not sure from this part of the book 🤔\nTry asking about something shown more clearly!"
             self._log("no_evidence", "", student_question, support_score, start)
             return msg, support_score
 
-        # Step 4 — LLM answer
+        merged_passage = "\n\n---\n\n".join(top_docs)
+
+        # ------------------------------------------------------------
+        # STEP 5 — ANSWER WITH MULTI-PASSAGE CONTEXT
+        # ------------------------------------------------------------
         prompt = self.PROMPT.format(
-            passage=best_passage,
+            passage=merged_passage,
             question=student_question
         )
 
@@ -169,11 +217,11 @@ Now answer following ALL rules.
         except Exception:
             reply = "I'm having trouble thinking right now — let's try again! 😊"
 
-        # Step 5 — safety check
+        # Final safety check
         if not responseCheck.is_output_safe(reply):
             reply = "Let's switch to something better for our age group 📚✨"
 
-        self._log("success", best_passage, student_question, support_score, start)
+        self._log("success", merged_passage, student_question, support_score, start)
         return reply, support_score
 
     # -----------------------------------------------------------
