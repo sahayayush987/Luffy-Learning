@@ -5,7 +5,7 @@ from openai import OpenAI
 from Helpers.streamlitPageHelper import streamlitPage  # Curriculum UI
 
 import os
-API_KEY = st.secrets["OPENAI_API_KEY"]
+OPENAI_API_KEY = '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'
 
 # --------------------------------------------------
 # PAGE CONFIG
@@ -19,7 +19,7 @@ st.set_page_config(page_title="AI Education Coach", layout="centered")
 # --------------------------------------------------
 @st.cache_resource
 def get_client():
-    return OpenAI(api_key=API_KEY)
+    return OpenAI(api_key=OPENAI_API_KEY)
 
 client = get_client()
 
