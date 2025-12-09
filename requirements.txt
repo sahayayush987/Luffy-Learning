@@ -13,3 +13,5 @@ langchain-community
 chromadb
 PyPDF2
 pypdf
+transformers
+torch
