@@ -7,3 +7,7 @@ noisereduce
 librosa
 numpy
 python-dotenv
+langchain
+langchain-openai
+chromadb
+PyPDF2
