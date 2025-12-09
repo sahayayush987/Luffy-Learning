@@ -35,8 +35,6 @@ def cached_structure_text(raw_text):
 # ----------------------------------------------------
 def plannerTab():
 
-    st.subheader("📘 Curriculum Planner")
-
     # -----------------------------------------------
     # SAMPLE CURRICULUM OPTION
     # -----------------------------------------------
