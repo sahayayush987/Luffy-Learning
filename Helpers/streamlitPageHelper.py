@@ -2,17 +2,23 @@ import streamlit as st
 from Helpers.textExtractionHelper import extract_text_from_file
 from Helpers.curriculumAgent import call_curriculum_agent
 import time
+import os
+
 
 # ----------------------------------------------------
-# ⚡ CACHED: Extract Text (uploaded_file object)
+# ⚡ CACHED: Extract Text (uploaded_file OR sample text)
 # ----------------------------------------------------
 @st.cache_data(show_spinner=False)
-def cached_extract_text(uploaded_file):
-    """
-    Extract text from the raw uploaded file.
-    Cached so the same file never reprocesses again.
-    """
+def cached_extract_text_from_upload(uploaded_file):
+    """Extract text from an uploaded file."""
     return extract_text_from_file(uploaded_file)
+
+
+@st.cache_data(show_spinner=False)
+def cached_extract_text_from_sample(sample_path):
+    """Read text from a bundled curriculum sample."""
+    with open(sample_path, "r", encoding="utf-8") as f:
+        return f.read()
 
 
 # ----------------------------------------------------
@@ -20,59 +26,80 @@ def cached_extract_text(uploaded_file):
 # ----------------------------------------------------
 @st.cache_data(show_spinner=False)
 def cached_structure_text(raw_text):
-    """
-    Calls LLM to structure curriculum.
-    Cached so re-renders never re-call the model.
-    """
+    """LLM structuring — cached."""
     return call_curriculum_agent(raw_text)
 
 
 # ----------------------------------------------------
-# 📘 PLANNER TAB (Upload → Extract → Structure)
+# 📘 PLANNER TAB
 # ----------------------------------------------------
 def plannerTab():
 
-    uploaded_file = st.file_uploader(
-        "Upload curriculum (PDF / TXT)",
-        type=["pdf", "txt"],
-        accept_multiple_files=False
-    )
+    st.subheader("📘 Curriculum Planner")
 
-    # Ensure state keys exist
+    # -----------------------------------------------
+    # SAMPLE CURRICULUM OPTION
+    # -----------------------------------------------
+    use_sample = st.checkbox("Use sample Python curriculum instead")
+
+    sample_path = "python_curriculum_detailed.txt"
+
+    uploaded_file = None
+
+    if not use_sample:
+        uploaded_file = st.file_uploader(
+            "Upload curriculum (PDF / TXT)",
+            type=["pdf", "txt"]
+        )
+
+    # -----------------------------------------------
+    # INIT SESSION STATE
+    # -----------------------------------------------
     st.session_state.setdefault("curriculum_text", None)
     st.session_state.setdefault("curriculum_structure", None)
+    st.session_state.setdefault("curriculum_source", None)
 
     preview_container = st.container()
     structure_container = st.container()
 
-    # ----------------------------
-    # PROCESS AFTER BUTTON CLICK
-    # ----------------------------
-    if uploaded_file and st.button("Analyze Curriculum", type="primary"):
+    # -----------------------------------------------
+    # PROCESS BUTTON
+    # -----------------------------------------------
+    if (uploaded_file or use_sample) and st.button("Analyze Curriculum", type="primary"):
 
-        # STEP 1 — Extract Text
-        with st.spinner("📄 Reading curriculum…"):
-            text = cached_extract_text(uploaded_file)
-            st.session_state["curriculum_text"] = text
+        # OPTION A — SAMPLE
+        if use_sample:
+            with st.spinner("📄 Loading sample curriculum…"):
+                text = cached_extract_text_from_sample(sample_path)
+                st.session_state["curriculum_text"] = text
+                st.session_state["curriculum_source"] = "sample"
 
-        # STEP 2 — Structure with AI
+        # OPTION B — UPLOADED FILE
+        else:
+            with st.spinner("📄 Reading curriculum…"):
+                text = cached_extract_text_from_upload(uploaded_file)
+                st.session_state["curriculum_text"] = text
+                st.session_state["curriculum_source"] = uploaded_file.name
+
+        # STRUCTURE USING AI
         with st.spinner("🧠 Understanding curriculum…"):
             structure = cached_structure_text(text)
             st.session_state["curriculum_structure"] = structure
 
-        st.success("✨ Curriculum extracted! Scroll down to explore.")
+        st.success("✨ Curriculum extracted successfully! Scroll down to explore.")
 
-    # ----------------------------
+    # -----------------------------------------------
     # RAW TEXT PREVIEW
-    # ----------------------------
+    # -----------------------------------------------
     if st.session_state["curriculum_text"]:
         with preview_container:
-            st.subheader("📄 Raw Text Preview")
+            source = st.session_state["curriculum_source"]
+            st.subheader(f"📄 Raw Text Preview ({source})")
             st.text(st.session_state["curriculum_text"][:2000])
 
-    # ----------------------------
-    # STRUCTURED CURRICULUM
-    # ----------------------------
+    # -----------------------------------------------
+    # STRUCTURED OUTPUT
+    # -----------------------------------------------
     structure = st.session_state["curriculum_structure"]
 
     if structure:
@@ -87,7 +114,7 @@ def plannerTab():
             else:
                 for i, module in enumerate(modules, start=1):
                     with st.expander(f"📦 Module {i}: {module.get('name', 'Unnamed Module')}"):
-                        
+
                         st.write(module.get("description", "No description provided."))
 
                         skills = module.get("skills", [])
@@ -104,8 +131,7 @@ def plannerTab():
 # ----------------------------------------------------
 def streamlitPage():
     """
-    Simple wrapper for Tab 3.
-    Shows a quick spinner before rendering the Planner.
+    Lightweight wrapper to avoid UI lag when this tab is opened.
     """
 
     st.header("🎓 Curriculum Intelligence")
@@ -113,8 +139,7 @@ def streamlitPage():
     placeholder = st.container()
     with placeholder:
         with st.spinner("Loading curriculum tools…"):
-            time.sleep(0.1)  # tiny delay so spinner actually appears
+            time.sleep(0.08)  # small delay so spinner appears
 
     placeholder.empty()
-
     plannerTab()
