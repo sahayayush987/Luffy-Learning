@@ -32,8 +32,6 @@ def cached_structure_text(raw_text):
 # ----------------------------------------------------
 def plannerTab():
 
-    st.subheader("📘 Curriculum Planner")
-
     uploaded_file = st.file_uploader(
         "Upload curriculum (PDF / TXT)",
         type=["pdf", "txt"],
