@@ -1,15 +1,17 @@
 import streamlit as st
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from openai import OpenAI
 
 from Helpers.streamlitPageHelper import streamlitPage  # Curriculum UI
 
+import os
+API_KEY = st.secrets["OPENAI_API_KEY"]
 
 # --------------------------------------------------
 # PAGE CONFIG
 # --------------------------------------------------
 st.set_page_config(page_title="AI Education Coach", layout="centered")
-load_dotenv()
+# load_dotenv()
 
 
 # --------------------------------------------------
@@ -17,7 +19,7 @@ load_dotenv()
 # --------------------------------------------------
 @st.cache_resource
 def get_client():
-    return OpenAI()
+    return OpenAI(api_key=API_KEY)
 
 client = get_client()
 

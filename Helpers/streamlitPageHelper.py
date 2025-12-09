@@ -1,5 +1,6 @@
 import streamlit as st
 import time
+import os
 
 # ----------------------------------------------------
 # ✨ Lazy import wrappers (ONLY run after button click)
@@ -31,68 +32,107 @@ def cached_structure_text(raw_text):
 # ----------------------------------------------------
 def plannerTab():
 
-    uploaded_file = st.file_uploader("Upload curriculum", type=["pdf", "txt"])
+    # -----------------------------
+    # Default curriculum file path
+    # -----------------------------
+    DEFAULT_FILE_PATH = "python_curriculum_detailed.txt"
 
-    # Init state only (cheap)
+    # Let user choose data source
+    source = st.radio(
+        "Select curriculum source:",
+        ["Use default Python curriculum", "Upload your own"],
+        horizontal=True
+    )
+
+    uploaded_file = None
+
+    # -----------------------------
+    # Option 1: Use default file
+    # -----------------------------
+    if source == "Use default Python curriculum":
+
+        if not os.path.exists(DEFAULT_FILE_PATH):
+            st.error(f"Default curriculum missing: {DEFAULT_FILE_PATH}")
+            return
+
+        st.info("Using default: **School Stuff We Pretend Is Fun 2025**")
+
+        with open(DEFAULT_FILE_PATH, "rb") as f:
+            uploaded_file = f.read()              # file bytes
+            default_name = os.path.basename(DEFAULT_FILE_PATH)
+
+    # -----------------------------
+    # Option 2: Upload user file
+    # -----------------------------
+    else:
+        file = st.file_uploader("Upload curriculum", type=["pdf", "txt"])
+        if file:
+            uploaded_file = file.getvalue()
+            default_name = file.name
+        else:
+            st.stop()  # user has not uploaded yet → stop rendering below
+
+    # -----------------------------
+    # Init session keys
+    # -----------------------------
     st.session_state.setdefault("curriculum_text", None)
     st.session_state.setdefault("curriculum_structure", None)
 
-    # Display instantly — no slowdown
-    preview = st.container()
-    structured = st.container()
+    preview_container = st.container()
+    structure_container = st.container()
 
-    # ------------------------------------------------
-    # ONLY heavy work runs AFTER click
-    # ------------------------------------------------
-    if uploaded_file and st.button("Analyze Curriculum", type="primary"):
+    # -----------------------------
+    # PROCESS CURRICULUM (ONLY WHEN BUTTON IS CLICKED)
+    # -----------------------------
+    if st.button("Analyze Curriculum", type="primary"):
 
-        file_bytes = uploaded_file.read()
-        file_name = uploaded_file.name
-
-        # STEP 1 — Extract
+        # STEP 1 — Extract raw text
         with st.spinner("📄 Reading curriculum…"):
-            text = cached_extract_text(file_bytes, file_name)
+            text = cached_extract_text(uploaded_file, default_name)
             st.session_state.curriculum_text = text
 
-        # STEP 2 — Structure
+        # STEP 2 — Structure with AI
         with st.spinner("🧠 Understanding curriculum…"):
             structure = cached_structure_text(text)
             st.session_state.curriculum_structure = structure
 
-        st.success("✨ Curriculum extracted! Scroll down.")
+        st.success("✨ Curriculum extracted successfully! Scroll down.")
 
-    # ------------------------------------------------
-    # UI below renders instantly
-    # ------------------------------------------------
+    # -----------------------------
+    # RAW TEXT PREVIEW
+    # -----------------------------
     if st.session_state.curriculum_text:
-        with preview:
+        with preview_container:
             st.subheader("📄 Raw Text Preview")
             st.text(st.session_state.curriculum_text[:2000])
 
-    if st.session_state.curriculum_structure:
-        structure = st.session_state.curriculum_structure
+    # -----------------------------
+    # STRUCTURED CURRICULUM
+    # -----------------------------
+    structure = st.session_state.curriculum_structure
 
-        with structured:
-            st.subheader("📚 Extracted Curriculum")
+    if structure:
+        with structure_container:
 
+            st.subheader("📚 Extracted Curriculum Structure")
             st.write(f"**Title:** {structure.get('title', 'Untitled Curriculum')}")
 
-            for i, mod in enumerate(structure.get("modules", []), 1):
-                with st.expander(f"📦 Module {i}: {mod.get('name','Unnamed')}"):
-                    st.write(mod.get("description", ""))
+            for i, module in enumerate(structure.get("modules", []), start=1):
+                with st.expander(f"📦 Module {i}: {module.get('name','Unnamed Module')}"):
 
-                    skills = mod.get("skills", [])
+                    st.write(module.get("description", "No description provided."))
+
+                    skills = module.get("skills", [])
                     if skills:
-                        st.markdown("**🎯 Skills:**")
-                        for s in skills:
-                            st.write(f"- {s}")
+                        st.markdown("**🎯 Skills Covered:**")
+                        for skill in skills:
+                            st.write(f"- {skill}")
                     else:
-                        st.info("No skills listed.")
+                        st.info("No skills listed for this module.")
 
 
-# ----------------------------------------------------
-# 🎓 WRAPPER (Tab 3 entry) — **zero delay**
-# ----------------------------------------------------
+
 def streamlitPage():
     st.header("🎓 Curriculum Intelligence")
-    plannerTab()
+    with st.spinner("Loading Modules..."):
+        plannerTab()

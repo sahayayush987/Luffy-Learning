@@ -6,3 +6,4 @@ eng_to_ipa
 noisereduce
 librosa
 numpy
+python-dotenv
