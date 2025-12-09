@@ -1,0 +1,8 @@
+streamlit
+openai
+python-docx
+pydub
+eng_to_ipa
+noisereduce
+librosa
+numpy

@@ -1,0 +1,99 @@
+Course Title: Python Programming Fundamentals
+Duration: 8 Weeks
+Time Commitment: 5 hours/week → 40 total hours
+Student Level: Beginner
+
+Course Description:
+This course introduces programming concepts using Python. Students will build problem-solving skills and learn how to write, test, and debug code for real-world applications.
+
+Learning Outcomes:
+By the end of this course, students will be able to:
+- Write basic Python programs using core syntax and clean code practices
+- Work with variables, datatypes, and data structures
+- Apply control flow to solve logical problems
+- Build modular programs using functions
+- Read and write data from files
+- Debug and test Python scripts effectively
+
+📅 Weekly Schedule + Skills
+
+Week 1: Getting Started
+Hours: 5
+Skills:
+- Understand Python’s role in software and AI
+- Install Python, VS Code, and extensions
+- Execute scripts from CLI
+Deliverable: “Hello World” challenge
+
+Week 2: Variables & Data Types
+Hours: 5
+Skills:
+- Numeric, Boolean, String datatypes
+- Type conversions
+- User input + printing formatted text
+Assignment 1: Basic calculator program
+
+Week 3: Conditionals (Decision Making)
+Hours: 5
+Skills:
+- If/elif/else
+- Logical operators
+Mini-Project: Text-based game (menu choices)
+
+Week 4: Loops (Iteration)
+Hours: 5
+Skills:
+- For loops, while loops
+- Nested loops
+Checkpoint Quiz #1 (10%)
+
+Week 5: Functions
+Hours: 5
+Skills:
+- Parameters, return values
+- Modular code structure
+Assignment 2: Create a reusable utility library
+
+Week 6: Data Structures
+Hours: 5
+Skills:
+- Lists, Tuples, Dictionaries, Sets
+- Indexing, slicing, iteration
+Lab Task: Contact list manager
+
+Week 7: File Handling + Error Management
+Hours: 5
+Skills:
+- Open/read/write files
+- Try/except error handling
+Checkpoint Quiz #2 (10%)
+
+Week 8: Debugging & Final Project
+Hours: 5
+Skills:
+- Tracebacks
+- Print debugging + VS Code debugger
+Capstone Project: Build a CLI app using all skills
+
+📊 Skills Overview:
+- Basics of Python
+- Problem-solving logic
+- Modular design & organization
+- Data manipulation and storage
+- Software debugging
+
+🎯 Assessments & Grading Breakdown:
+- Assignment 1 (Week 2): 15%
+- Mini-Project #1 (Week 3): 10%
+- Quiz #1 (Week 4): 10%
+- Assignment 2 (Week 5): 15%
+- Quiz #2 (Week 7): 10%
+- Capstone Final Project (Week 8): 40%
+
+Passing Criteria:
+≥ 70% overall score
+
+Required Tools:
+• Python 3.10+
+• VS Code
+• Git CLI (optional)
