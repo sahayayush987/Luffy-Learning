@@ -7,8 +7,16 @@ def render_sidebar():
     Renders the sidebar with navigation, settings, and app information
     """
     with st.sidebar:
-        # App Logo/Title
-        st.title("🐶 Luffy Learning")
+
+        current_file = os.path.abspath(__file__)
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_file)))
+        logo_path = os.path.join(project_root, "logo.png")
+        
+        if os.path.exists(logo_path):
+            st.image(logo_path, use_container_width=False)
+        else:
+            # Fallback if logo not found
+            st.title("🐶 Luffy Learning")
         st.markdown("---")
         
         # Navigation Section
