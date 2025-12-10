@@ -1,12 +1,12 @@
 """
 Main entry point for Luffy Learning AI Education Coach
 
-This file imports and runs the main app from the new structured package.
-For development, you can also run: streamlit run src/ui/main_app.py
+This file imports and runs the main app.
+Run with: streamlit run app.py
 """
 
-from src.ui.main_app import main, footer
+import src.ui.main_app as main_app
 
 if __name__ == "__main__":
-    main()
-    footer()
+    main_app.main()
+    main_app.footer()

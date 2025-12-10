@@ -19,6 +19,7 @@ def render_sidebar():
         - 🗣️ **Speaking Practice** - Improve pronunciation
         - 📖 **Ask The Book** - AI reading tutor
         - 📚 **Curriculum** - Analyze curriculum
+        - 🎓 **MCQ Generator** - Generate practice questions
         """)
         
         st.markdown("---")
@@ -48,6 +49,7 @@ def render_sidebar():
         - 🗣️ Speaking practice with pronunciation analysis
         - 📖 Interactive book tutoring
         - 📚 Curriculum summarization
+        - 🎓 MCQ question generation
         
         **Powered by:**
         - OpenAI GPT models

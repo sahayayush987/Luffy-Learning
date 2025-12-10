@@ -15,3 +15,4 @@ PyPDF2
 pypdf
 transformers
 torch
+pdf_extractor

@@ -7,7 +7,7 @@ from src.modules.book_tutor.ui import ask_the_book_tab
 from src.modules.curriculum.ui import streamlit_page
 from src.ui.components import footer
 from src.ui.sidebar import render_sidebar
-
+from src.modules.MCQ_Generator.mcq_ui import mcq_generator_tab
 import os
 
 # --------------------------------------------------
@@ -39,6 +39,10 @@ def cached_book_ui():
     return ask_the_book_tab
 
 @st.cache_resource
+def cached_mcq_generator():
+    return mcq_generator_tab
+
+@st.cache_resource
 def cached_curriculum_page():
     # streamlit_page() does not return a function → 
     # we wrap it in a callable and return THAT
@@ -56,10 +60,11 @@ def main():
     
     st.title("🐶 Luffy Learning – AI Education Coach")
 
-    tab1, tab2, tab3 = st.tabs([
+    tab1, tab2, tab3, tab4 = st.tabs([
         "🗣️ Speaking / Practice",
         "📖 Ask The Book",
-        "📚 Summarize Curriculum"
+        "📚 Summarize Curriculum",
+        "🎓 MCQ Generator"
     ])
 
     # -----------------------------
@@ -88,6 +93,13 @@ def main():
         # streamlit_page has its own internal spinners for heavy work
         curriculum_ui()
 
+    # -----------------------------
+    # TAB 4 — MCQ GENERATOR
+    # -----------------------------
+    with tab4:
+        with st.spinner("Loading MCQ Generator…"):
+         mcq_generator = cached_mcq_generator()  # only loads once
+         mcq_generator(client)
 
 # --------------------------------------------------
 # RUN

@@ -1,6 +1,6 @@
 # Luffy Learning - AI Education Coach
 
-An AI-powered educational platform with multiple learning modules including speaking practice, book tutoring, and curriculum analysis.
+An AI-powered educational platform with multiple learning modules including speaking practice, book tutoring, curriculum analysis, and MCQ question generation.
 
 ## Project Structure
 
@@ -31,11 +31,16 @@ Luffy-Learning/
 │   │   │   ├── tutor.py          # ReadingTutor class
 │   │   │   └── ui.py             # Book tutor UI component
 │   │   │
-│   │   └── curriculum/           # Curriculum analysis module
+│   │   ├── curriculum/           # Curriculum analysis module
+│   │   │   ├── __init__.py
+│   │   │   ├── agent.py          # Curriculum agent (LLM processing)
+│   │   │   ├── helpers.py        # Text extraction helpers
+│   │   │   └── ui.py             # Curriculum UI component
+│   │   │
+│   │   └── MCQ_Generator/       # MCQ question generator module
 │   │       ├── __init__.py
-│   │       ├── agent.py          # Curriculum agent (LLM processing)
-│   │       ├── helpers.py        # Text extraction helpers
-│   │       └── ui.py             # Curriculum UI component
+│   │       ├── mcq_generator.py  # MCQ generation logic
+│   │       └── mcq_ui.py         # MCQ UI component
 │   │
 │   ├── services/                  # External services and APIs
 │   │   ├── __init__.py
@@ -76,6 +81,13 @@ Luffy-Learning/
 - Extract structured curriculum information
 - Organize into modules and skills
 - Use sample Python curriculum
+
+### 🎓 MCQ Generator
+- Generate multiple-choice questions from any text or PDF
+- Customizable difficulty levels (easy, medium, hard)
+- Adjustable number of questions (3-15)
+- Interactive quiz interface with instant feedback
+- Detailed explanations for each answer
 
 ## Setup
 
@@ -139,4 +151,6 @@ This structure makes it easy to:
 - Vector stores are persisted in `data/chroma_stores/`
 - Feedback logs are stored in `feedback.db` (SQLite)
 - All modules are lazy-loaded to improve startup time
+- MCQ Generator uses session state to persist questions across interactions
+- All modules support both PDF and TXT file formats
 
