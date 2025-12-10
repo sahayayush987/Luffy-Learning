@@ -13,3 +13,6 @@ def footer():
         unsafe_allow_html=True,
     )
 
+
+# Sidebar is in a separate file (sidebar.py) for better organization
+

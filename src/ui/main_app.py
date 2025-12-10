@@ -6,13 +6,18 @@ from src.modules.speaking.ui import evaluate_speaking
 from src.modules.book_tutor.ui import ask_the_book_tab
 from src.modules.curriculum.ui import streamlit_page
 from src.ui.components import footer
+from src.ui.sidebar import render_sidebar
 
 import os
 
 # --------------------------------------------------
 # PAGE CONFIG
 # --------------------------------------------------
-st.set_page_config(page_title="AI Education Coach", layout="centered")
+st.set_page_config(
+    page_title="AI Education Coach",
+    page_icon="🐶",
+    initial_sidebar_state="expanded"
+)
 load_dotenv()
 
 
@@ -46,6 +51,9 @@ def cached_curriculum_page():
 # MAIN APP
 # --------------------------------------------------
 def main():
+    # Render sidebar
+    render_sidebar()
+    
     st.title("🐶 Luffy Learning – AI Education Coach")
 
     tab1, tab2, tab3 = st.tabs([
