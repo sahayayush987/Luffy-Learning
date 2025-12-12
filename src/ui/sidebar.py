@@ -13,7 +13,7 @@ def render_sidebar():
         logo_path = os.path.join(project_root, "logo.png")
         
         if os.path.exists(logo_path):
-            st.image(logo_path, use_container_width=False)
+            st.image(logo_path, width='content')
         else:
             # Fallback if logo not found
             st.title("🐶 Luffy Learning")
@@ -28,6 +28,7 @@ def render_sidebar():
         - 📖 **Ask The Book** - AI reading tutor
         - 📚 **Curriculum** - Analyze curriculum
         - 🎓 **MCQ Generator** - Generate practice questions
+        - 💡 **Vocabulary Builder** - Build vocabulary skills
         """)
         
         st.markdown("---")
@@ -58,6 +59,7 @@ def render_sidebar():
         - 📖 Interactive book tutoring
         - 📚 Curriculum summarization
         - 🎓 MCQ question generation
+        - 💡 Vocabulary building with grade-level words
         
         **Powered by:**
         - OpenAI GPT models

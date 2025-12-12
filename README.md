@@ -1,6 +1,6 @@
 # Luffy Learning - AI Education Coach
 
-An AI-powered educational platform with multiple learning modules including speaking practice, book tutoring, curriculum analysis, and MCQ question generation.
+An AI-powered educational platform with multiple learning modules including speaking practice, book tutoring, curriculum analysis, MCQ question generation, and vocabulary building.
 
 ## Project Structure
 
@@ -41,6 +41,11 @@ Luffy-Learning/
 │   │       ├── __init__.py
 │   │       ├── mcq_generator.py  # MCQ generation logic
 │   │       └── mcq_ui.py         # MCQ UI component
+│   │   │
+│   │   └── vocabulary_builder/   # Vocabulary builder module
+│   │       ├── __init__.py
+│   │       ├── vocabulary_builder.py  # Vocabulary generation logic
+│   │       └── ui.py             # Vocabulary builder UI component
 │   │
 │   ├── services/                  # External services and APIs
 │   │   ├── __init__.py
@@ -88,6 +93,14 @@ Luffy-Learning/
 - Adjustable number of questions (3-15)
 - Interactive quiz interface with instant feedback
 - Detailed explanations for each answer
+
+### 💡 Vocabulary Builder
+- Generate 10 vocabulary words tailored to grade level (1-3, 4-6, 7-9, 10-12)
+- Customizable difficulty levels (easy, medium, hard)
+- Each word includes: definition, part of speech, example sentence, and synonyms
+- Age-appropriate vocabulary selection
+- Expandable word cards for easy learning
+- Generate new word sets on demand
 
 ## Setup
 
@@ -152,5 +165,6 @@ This structure makes it easy to:
 - Feedback logs are stored in `feedback.db` (SQLite)
 - All modules are lazy-loaded to improve startup time
 - MCQ Generator uses session state to persist questions across interactions
-- All modules support both PDF and TXT file formats
+- Vocabulary Builder uses session state to persist generated words
+- All modules support both PDF and TXT file formats (where applicable)
 

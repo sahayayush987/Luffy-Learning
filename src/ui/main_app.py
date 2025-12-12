@@ -8,6 +8,7 @@ from src.modules.curriculum.ui import streamlit_page
 from src.ui.components import footer
 from src.ui.sidebar import render_sidebar
 from src.modules.MCQ_Generator.mcq_ui import mcq_generator_tab
+from src.modules.vocabulary_builder.ui import vocabulary_builder_tab
 import os
 
 # --------------------------------------------------
@@ -43,6 +44,10 @@ def cached_mcq_generator():
     return mcq_generator_tab
 
 @st.cache_resource
+def cached_vocabulary_builder():
+    return vocabulary_builder_tab
+
+@st.cache_resource
 def cached_curriculum_page():
     # streamlit_page() does not return a function → 
     # we wrap it in a callable and return THAT
@@ -60,11 +65,12 @@ def main():
     
     st.title("🐶 Luffy Learning – AI Education Coach")
 
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "🗣️ Speaking / Practice",
         "📖 Ask The Book",
         "📚 Summarize Curriculum",
-        "🎓 MCQ Generator"
+        "🎓 MCQ Generator",
+        "💡 Vocabulary Builder"
     ])
 
     # -----------------------------
@@ -98,8 +104,16 @@ def main():
     # -----------------------------
     with tab4:
         with st.spinner("Loading MCQ Generator…"):
-         mcq_generator = cached_mcq_generator()  # only loads once
-         mcq_generator(client)
+            mcq_generator = cached_mcq_generator()  # only loads once
+        mcq_generator(client)
+
+    # -----------------------------
+    # TAB 5 — VOCABULARY BUILDER
+    # -----------------------------
+    with tab5:
+        with st.spinner("Loading Vocabulary Builder…"):
+            vocabulary_builder = cached_vocabulary_builder()  # only loads once
+        vocabulary_builder(client)
 
 # --------------------------------------------------
 # RUN
