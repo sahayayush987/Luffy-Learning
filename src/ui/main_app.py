@@ -1,6 +1,5 @@
 import streamlit as st
 from dotenv import load_dotenv
-
 from src.services.openai_client import get_openai_client
 from src.modules.speaking.ui import evaluate_speaking
 from src.modules.book_tutor.ui import ask_the_book_tab
@@ -10,20 +9,17 @@ from src.ui.sidebar import render_sidebar
 from src.modules.MCQ_Generator.mcq_ui import mcq_generator_tab
 from src.modules.vocabulary_builder.ui import vocabulary_builder_tab
 from src.modules.book_recommendations.ui import book_recommendations_tab
-import os
 
-# --------------------------------------------------
-# PAGE CONFIG
-# --------------------------------------------------
-st.set_page_config(
-    page_title="AI Education Coach",
-    page_icon="🐶",
-    initial_sidebar_state="expanded",
-    layout="wide"
-)
 load_dotenv()
 
-
+if "page_config_set" not in st.session_state:
+    st.set_page_config(
+        page_title="AI Education Coach",
+        page_icon="🐶",
+        initial_sidebar_state="expanded",
+        layout="wide"
+    )
+    st.session_state.page_config_set = True
 # --------------------------------------------------
 # CACHE OPENAI CLIENT
 # --------------------------------------------------
