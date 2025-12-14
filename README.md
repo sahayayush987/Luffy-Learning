@@ -1,6 +1,6 @@
 # Luffy Learning - AI Education Coach
 
-An AI-powered educational platform with multiple learning modules including speaking practice, book tutoring, curriculum analysis, MCQ question generation, and vocabulary building.
+An AI-powered educational platform with multiple learning modules including speaking practice, book tutoring, curriculum analysis, MCQ question generation, vocabulary building, and book recommendations.
 
 ## Project Structure
 
@@ -46,6 +46,10 @@ Luffy-Learning/
 │   │       ├── __init__.py
 │   │       ├── vocabulary_builder.py  # Vocabulary generation logic
 │   │       └── ui.py             # Vocabulary builder UI component
+│   │   │
+│   │   └── book_recommendations/  # Book recommendations module
+│   │       ├── __init__.py
+│   │       └── ui.py             # Book recommendations UI component
 │   │
 │   ├── services/                  # External services and APIs
 │   │   ├── __init__.py
@@ -102,6 +106,16 @@ Luffy-Learning/
 - Expandable word cards for easy learning
 - Generate new word sets on demand
 
+### 📚 Luffy Book Recommendations
+- Get personalized book recommendations based on user preferences
+- AI-powered recommendations using LangChain agents with Tavily search
+- Generates 5-7 book recommendations per request
+- Each recommendation includes: title, author, age range, reason, cover image, and buy link
+- Automatically finds book cover images and purchase links
+- Supports multiple retailers (Amazon, Barnes & Noble, Bookshop.org, etc.)
+- Age-appropriate filtering to ensure safe content
+- Only recommends books with available cover images
+
 ## Setup
 
 1. **Install dependencies:**
@@ -113,6 +127,7 @@ Luffy-Learning/
    Create a `.env` file with:
    ```
    OPENAI_API_KEY=your_api_key_here
+   TAVILY_API_KEY=your_tavily_api_key_here  # Optional: for Book Recommendations feature
    ```
 
 3. **Add PDF books (for Ask The Book feature):**
@@ -166,5 +181,6 @@ This structure makes it easy to:
 - All modules are lazy-loaded to improve startup time
 - MCQ Generator uses session state to persist questions across interactions
 - Vocabulary Builder uses session state to persist generated words
+- Book Recommendations uses LangChain agents with Tavily search integration
 - All modules support both PDF and TXT file formats (where applicable)
 

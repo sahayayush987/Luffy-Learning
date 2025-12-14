@@ -10,9 +10,11 @@ python-dotenv
 langchain
 langchain-openai
 langchain-community
+langchain-tavily
 chromadb
 PyPDF2
 pypdf
 transformers
 torch
 pdf_extractor
+langchain-mcp

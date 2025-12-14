@@ -29,6 +29,7 @@ def render_sidebar():
         - 📚 **Curriculum** - Analyze curriculum
         - 🎓 **MCQ Generator** - Generate practice questions
         - 💡 **Vocabulary Builder** - Build vocabulary skills
+        - 📚 **Luffy Book Recommendations** - Get personalized book recommendations
         """)
         
         st.markdown("---")
@@ -60,6 +61,7 @@ def render_sidebar():
         - 📚 Curriculum summarization
         - 🎓 MCQ question generation
         - 💡 Vocabulary building with grade-level words
+        - 📚 Personalized book recommendations with cover images and buy links
         
         **Powered by:**
         - OpenAI GPT models

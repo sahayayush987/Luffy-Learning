@@ -9,6 +9,7 @@ from src.ui.components import footer
 from src.ui.sidebar import render_sidebar
 from src.modules.MCQ_Generator.mcq_ui import mcq_generator_tab
 from src.modules.vocabulary_builder.ui import vocabulary_builder_tab
+from src.modules.book_recommendations.ui import book_recommendations_tab
 import os
 
 # --------------------------------------------------
@@ -17,7 +18,8 @@ import os
 st.set_page_config(
     page_title="AI Education Coach",
     page_icon="🐶",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
+    layout="wide"
 )
 load_dotenv()
 
@@ -48,6 +50,10 @@ def cached_vocabulary_builder():
     return vocabulary_builder_tab
 
 @st.cache_resource
+def cached_book_recommendations():
+    return book_recommendations_tab
+
+@st.cache_resource
 def cached_curriculum_page():
     # streamlit_page() does not return a function → 
     # we wrap it in a callable and return THAT
@@ -65,12 +71,13 @@ def main():
     
     st.title("🐶 Luffy Learning – AI Education Coach")
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "🗣️ Speaking / Practice",
         "📖 Ask The Book",
         "📚 Summarize Curriculum",
         "🎓 MCQ Generator",
-        "💡 Vocabulary Builder"
+        "💡 Vocabulary Builder",
+        "📚 Luffy Book Recommendations"
     ])
 
     # -----------------------------
@@ -114,6 +121,14 @@ def main():
         with st.spinner("Loading Vocabulary Builder…"):
             vocabulary_builder = cached_vocabulary_builder()  # only loads once
         vocabulary_builder(client)
+
+    # -----------------------------
+    # TAB 6 — BOOK RECOMMENDATIONS
+    # -----------------------------
+    with tab6:
+        with st.spinner("Loading Book Recommendations…"):
+            book_recommendations = cached_book_recommendations()  # only loads once
+        book_recommendations(client)
 
 # --------------------------------------------------
 # RUN
