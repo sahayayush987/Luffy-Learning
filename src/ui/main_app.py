@@ -11,15 +11,6 @@ from src.modules.vocabulary_builder.ui import vocabulary_builder_tab
 from src.modules.book_recommendations.ui import book_recommendations_tab
 
 load_dotenv()
-
-if "page_config_set" not in st.session_state:
-    st.set_page_config(
-        page_title="AI Education Coach",
-        page_icon="🐶",
-        initial_sidebar_state="expanded",
-        layout="wide"
-    )
-    st.session_state.page_config_set = True
 # --------------------------------------------------
 # CACHE OPENAI CLIENT
 # --------------------------------------------------
