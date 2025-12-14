@@ -11,6 +11,7 @@ langchain
 langchain-openai
 langchain-community
 langchain-tavily
+langchain-classic
 chromadb
 PyPDF2
 pypdf
